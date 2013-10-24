@@ -4,7 +4,10 @@
 * PostgreSQL 9.3.1
 * PostGIS
 
-## Create PostgreSQL database with PostGIS support
+
+## Installing project
+
+### Create PostgreSQL database with PostGIS support
 ```
 $ psql postgres
 > CREATE ROLE fiscalcidadao LOGIN
@@ -18,15 +21,18 @@ $ psql --host=127.0.0.1 --username=fiscalcidadao fiscalcidadao
 > CREATE EXTENSION postgis_topology;
 ```
 
-## Installing project
+### Django project
 
-- Create a virtualenv and then install requirements:
+- We recommend using a [VirtualEnv](http://www.virtualenv.org/en/latest/) with
+  [VirtualEnvWrapper](http://virtualenvwrapper.readthedocs.org/en/latest/).
+
+- To install requirements:
 
 ```
 $ pip install -r requirements.txt
 ```
 
-- To install the development requirements:
+- If you are developing you can install the development requirements:
 
 ```
 $ pip install -r requirements/dev.txt
