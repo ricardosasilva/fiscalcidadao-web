@@ -18,6 +18,29 @@ $ psql --host=127.0.0.1 --username=fiscalcidadao fiscalcidadao
 > CREATE EXTENSION postgis_topology;
 ```
 
+## Installing project
+
+- Create a virtualenv and then install requirements:
+
+```
+$ pip install -r requirements.txt
+```
+
+- To install the development requirements:
+
+```
+$ pip install -r requirements/dev.txt
+```
+
+- Create an settings file for you environment on fiscalcidadao/settings/dev/\<your-filename\>.py
+  You can use the file fiscalcidadao/settings/dev/sample.py as a template.
+
+- Add this file to DJANGO_SETTINGS_MODULE environment variable:
+
+```
+$ export DJANGO_SETTINGS_MODULE=fiscalcidadao.settings.dev.<your-filename>
+```
+
 ## Importing GTFS data
 
 ```
