@@ -56,7 +56,7 @@ class OccurrenceManager(models.GeoManager):
 class Occurrence(models.Model):
     fact = models.ForeignKey(Fact)
     date_time = models.DateTimeField()
-    location = models.PointField(srid=4326)
+    location = models.PointField(srid=4326, null=True, blank=True)
     route = models.ForeignKey(Route, null=True, blank=True)
     comment = models.TextField(blank=True)
     photo = ImageField(blank=True, upload_to=occurrence_photo_upload_to)
