@@ -47,6 +47,14 @@ $ pip install -r requirements/dev.txt
 $ export DJANGO_SETTINGS_MODULE=fiscalcidadao.settings.dev.<your-filename>
 ```
 
+- Create tables:
+
+```
+$ python manage.py syncdb
+
+$ python manage.py migrate
+```
+
 ## Importing GTFS data
 
 ```
