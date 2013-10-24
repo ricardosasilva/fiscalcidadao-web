@@ -1,0 +1,41 @@
+#
+# Copyright (c) 2013,
+# Diogo Baeder, Francisco Ciliao, Gabriel Palacio, Ricardo Silva, Vitor George
+# All rights reserved.
+#
+# Redistribution and use in source and binary forms, with or without modificat-
+# ion, are permitted provided that the following conditions are met:
+#
+#  - Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#  - Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+# ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+# LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+# CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+# SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+# CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+# POSSIBILITY OF SUCH DAMAGE.
+#
+
+Django==1.5.4
+GDAL==1.10.1
+PIL==1.1.7
+South==0.8.2
+amqp==1.0.13
+celery==3.0.24
+django-celery==3.0.23
+django-extensions==1.2.5
+multigtfs==0.2.6
+psycopg2==2.5.1
+python-dateutil==2.1
+pytz==2013.7
+sorl-thumbnail==11.12
+wsgiref==0.1.2
