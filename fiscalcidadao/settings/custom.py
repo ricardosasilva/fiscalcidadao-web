@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #
 # Copyright (c) 2013,
 # Diogo Baeder, Francisco Ciliao, Gabriel Palacio, Ricardo Silva, Vitor George
@@ -25,20 +26,15 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-Django==1.5.4
-GDAL==1.10.1
-PIL==1.1.7
-South==0.8.2
-amqp==1.0.13
-celery==3.0.24
-django-celery==3.0.23
-django-extensions==1.2.5
-multigtfs==0.2.6
-psycopg2==2.5.1
-python-dateutil==2.1
-pytz==2013.7
-sorl-thumbnail==11.12
-djangorestframework==2.3.8
-Markdown==2.3.1
-django-filter==0.7
-wsgiref==0.1.2
+REST_FRAMEWORK = {
+    # Use hyperlinked styles by default.
+    # Only used if the `serializer_class` attribute is not set on a view.
+    'DEFAULT_MODEL_SERIALIZER_CLASS':
+        'rest_framework.serializers.HyperlinkedModelSerializer',
+
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}

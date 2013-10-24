@@ -105,6 +105,7 @@ INSTALLED_APPS = (
     'django_extensions',
     'south',
     'multigtfs',
+    'rest_framework',
     'broker',
 )
 

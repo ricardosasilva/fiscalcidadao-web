@@ -26,15 +26,22 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+from broker.api import FactViewSet, OccurrenceViewSet
 from django.conf.urls import patterns, include, url
 from django.contrib import admin
+from rest_framework import routers
 
 admin.autodiscover()
 
-urlpatterns = patterns('',
-    # url(r'^$', 'fiscalcidadao.views.home', name='home'),
-    # url(r'^fiscalcidadao/', include('fiscalcidadao.foo.urls')),
 
-    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+# Routers provide an easy way of automatically determining the URL conf
+router = routers.DefaultRouter()
+router.register(r'api/facts', FactViewSet)
+router.register(r'occurrences', OccurrenceViewSet)
+
+urlpatterns = patterns('',
+    url(r'^', include(router.urls)),
     url(r'^admin/', include(admin.site.urls)),
+    url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
 )
