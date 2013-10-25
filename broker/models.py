@@ -34,14 +34,28 @@ import os
 import uuid
 
 FACT_TYPES = (
-    (0, _(u'Praise')),
+    (0, _(u'Suggestion')),
     (1, _(u'Complain'))
 )
 
+OCCURRENCE_STATUS_NEW = 0
+OCCURRENCE_STATUS_ANALISING = 1
+OCCURRENCE_STATUS_ACCEPTED = 2
+OCCURRENCE_STATUS_REJECTED = 3
+
+OCCURRENCE_STATUS = (
+  (OCCURRENCE_STATUS_NEW, _(u'New')),
+  (OCCURRENCE_STATUS_ANALISING, _(u'Analising')),
+  (OCCURRENCE_STATUS_ACCEPTED, _(u'Accepted')),
+  (OCCURRENCE_STATUS_REJECTED, _(u'Rejected')),
+)
 
 class Fact(models.Model):
     description = models.CharField(max_length=30)
     fact_type = models.SmallIntegerField(choices=FACT_TYPES)
+
+    def __unicode__(self):
+        return u'%s' % self.description
 
 
 def occurrence_photo_upload_to(instance, filename):
@@ -61,7 +75,18 @@ class Occurrence(models.Model):
     comment = models.TextField(blank=True)
     photo = ImageField(blank=True, upload_to=occurrence_photo_upload_to)
     mobile_id = models.CharField(max_length=64, blank=True)
+    ip_address = models.CharField(max_length=15, blank=True)
+    status = models.IntegerField(default=OCCURRENCE_STATUS_NEW, choices=OCCURRENCE_STATUS)
     objects = OccurrenceManager()
 
     def __unicode__(self):
         return u'%s' % self.pk
+
+
+class Region(models.Model):
+    name = models.CharField(max_length=50)
+    area = models.PolygonField()
+    objects = models.GeoManager()
+
+    def __unicode__(self):
+        return u'%s' % self.name

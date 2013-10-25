@@ -26,7 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-from broker.models import Fact, Occurrence
+from broker.models import Fact, Occurrence, Region
 from django.contrib.gis import admin
 
 
@@ -39,3 +39,4 @@ class OccurrenceAdmin(admin.OSMGeoAdmin):
 
 admin.site.register(Fact, FactAdmin)
 admin.site.register(Occurrence, OccurrenceAdmin)
+admin.site.register(Region, admin.OSMGeoAdmin)
