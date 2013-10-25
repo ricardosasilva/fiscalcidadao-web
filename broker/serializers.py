@@ -25,20 +25,4 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-
-from broker.models import Fact, Occurrence, Region
-from django.contrib.gis import admin
-
-
-class FactAdmin(admin.ModelAdmin):
-    list_fields = ('description', 'fact_type')
-
-
-class OccurrenceAdmin(admin.OSMGeoAdmin):
-    list_fields = ('description', 'fact_type')
-    list_filter = ('status', 'date_time')
-
-
-admin.site.register(Fact, FactAdmin)
-admin.site.register(Occurrence, OccurrenceAdmin)
-admin.site.register(Region, admin.OSMGeoAdmin)
+        

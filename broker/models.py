@@ -44,19 +44,11 @@ OCCURRENCE_STATUS_ACCEPTED = 2
 OCCURRENCE_STATUS_REJECTED = 3
 
 OCCURRENCE_STATUS = (
-  (OCCURRENCE_STATUS_NEW, _(u'New')),
-  (OCCURRENCE_STATUS_ANALISING, _(u'Analising')),
-  (OCCURRENCE_STATUS_ACCEPTED, _(u'Accepted')),
-  (OCCURRENCE_STATUS_REJECTED, _(u'Rejected')),
+    (OCCURRENCE_STATUS_NEW, _(u'New')),
+    (OCCURRENCE_STATUS_ANALISING, _(u'Analising')),
+    (OCCURRENCE_STATUS_ACCEPTED, _(u'Accepted')),
+    (OCCURRENCE_STATUS_REJECTED, _(u'Rejected')),
 )
-
-
-class User(models.Model):
-    phone = models.CharField(max_lenght=20)
-    password = models.CharField(max_length=64)
-
-    def __unicode__(self):
-        return u'%s' % self.phone
 
 
 class Fact(models.Model):
@@ -77,7 +69,6 @@ class OccurrenceManager(models.GeoManager):
 
 
 class Occurrence(models.Model):
-    user = models.ForeignKey(User, blank=True, null=True)
     fact = models.ForeignKey(Fact)
     date_time = models.DateTimeField()
     location = models.PointField(srid=4326, null=True, blank=True)
@@ -85,7 +76,9 @@ class Occurrence(models.Model):
     comment = models.TextField(blank=True)
     photo = ImageField(blank=True, upload_to=occurrence_photo_upload_to)
     ip_address = models.CharField(max_length=15, blank=True)
-    status = models.IntegerField(default=OCCURRENCE_STATUS_NEW, choices=OCCURRENCE_STATUS)
+    status = models.IntegerField(default=OCCURRENCE_STATUS_NEW,
+                                 choices=OCCURRENCE_STATUS)
+    phone = models.CharField(max_length=20, blank=True, db_index=True)
     objects = OccurrenceManager()
 
     def __unicode__(self):

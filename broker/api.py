@@ -29,7 +29,7 @@ from broker.models import Fact, Occurrence
 from rest_framework import viewsets
 
 
-class FactViewSet(viewsets.ModelViewSet):
+class FactViewSet(viewsets.ReadOnlyModelViewSet):
     model = Fact
 
 
