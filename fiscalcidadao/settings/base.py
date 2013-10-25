@@ -107,6 +107,7 @@ INSTALLED_APPS = (
     'multigtfs',
     'rest_framework',
     'broker',
+    'mockups',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
