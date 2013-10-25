@@ -8,15 +8,20 @@
 ## Installing project
 
 ### Create PostgreSQL database with PostGIS support
+
+Create user fiscalcidadao, with password fiscalcidadao:
 ```
 $ psql postgres
 > CREATE ROLE fiscalcidadao LOGIN
   ENCRYPTED PASSWORD 'md5669aefa8077d19d1e7feffe708f905e7'
   NOSUPERUSER INHERIT CREATEDB NOCREATEROLE NOREPLICATION;
-  
+```
+
+Create database and PostGIS extensions:
+```
 $ createdb -W --host=127.0.0.1 --username=fiscalcidadao fiscalcidadao
 
-$ psql --host=127.0.0.1 --username=fiscalcidadao fiscalcidadao
+$ psql fiscalcidadao
 > CREATE EXTENSION postgis;
 > CREATE EXTENSION postgis_topology;
 ```
