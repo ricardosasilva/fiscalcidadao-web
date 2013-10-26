@@ -34,28 +34,35 @@ from multigtfs.models.trip import Trip
 
 
 class FactAdmin(admin.ModelAdmin):
-    list_fields = ('description', 'fact_type')
+    list_display = ('id', 'description', 'fact_type')
 
 
 class OccurrenceAdmin(admin.OSMGeoAdmin):
-    list_fields = ('description', 'fact_type')
-    list_filter = ('date_time',)
+    list_display = ('date_time', 'fact', 'route')
+    list_filter = ('date_time', 'fact')
     raw_id_fields = ('route',)
+
+
+class RegionAdmin(admin.OSMGeoAdmin):
+    list_display = ('code', 'name')
 
 
 admin.site.register(Fact, FactAdmin)
 admin.site.register(Occurrence, OccurrenceAdmin)
-admin.site.register(Region, admin.OSMGeoAdmin)
+admin.site.register(Region, RegionAdmin)
 
 
 class StopAdmin(admin.ModelAdmin):
     raw_id_fields = ('parent_station',)
 
+
 class RouteAdmin(admin.ModelAdmin):
     list_filter = ('rtype',)
 
+
 class TripAdmin(admin.ModelAdmin):
     raw_id_fields = ('route', 'services', 'shape')
+
 
 admin.site.unregister(Stop)
 admin.site.unregister(Route)
