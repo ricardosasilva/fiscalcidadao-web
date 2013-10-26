@@ -26,7 +26,7 @@
 #
 
 Django==1.5.4
-GDAL==1.10.1
+GDAL==1.10.0
 PIL==1.1.7
 South==0.8.2
 amqp==1.0.13
@@ -42,8 +42,3 @@ djangorestframework==2.3.8
 Markdown==2.3.1
 django-filter==0.7
 wsgiref==0.1.2
-django-extensions==1.2.5
-south==0.8.2
-multigtfs==0.2.6
-djangorestframework==2.3.8
-sorl-thumbnail==11.12
