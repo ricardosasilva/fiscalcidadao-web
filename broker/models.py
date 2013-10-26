@@ -54,7 +54,6 @@ def occurrence_photo_upload_to(instance, filename):
 class OccurrenceManager(models.GeoManager):
     pass
 
-
 class Occurrence(models.Model):
     fact = models.ForeignKey(Fact)
     date_time = models.DateTimeField()
@@ -70,10 +69,23 @@ class Occurrence(models.Model):
         return u'%s' % self.pk
 
 
+class RegionManager(models.GeoManager):
+
+    def total_occurrences(self):
+        result = {}
+        for region in Region.objects.all():
+            total_occurrences = Occurrence.objects.filter(location__within=region.area).count()
+#            occurrences = Occurrence.objects.filter(location__within=region.area).order_by('fact').annotate(Count('fact'))
+#            facts = Fact.objects.filter(occurrence__in=occurrences).annotate(total_occurrences=Count('occurrence')).values('id', 'total_occurrences')
+            result[region.id] = total_occurrences 
+        return result
+
+
 class Region(models.Model):
     name = models.CharField(max_length=50)
+    code = models.CharField(max_length=10, blank=True)
     area = models.PolygonField()
-    objects = models.GeoManager()
+    objects = RegionManager()
 
     def __unicode__(self):
         return u'%s' % self.name

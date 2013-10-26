@@ -40,6 +40,7 @@ router.register(r'facts', FactViewSet)
 router.register(r'occurrences', OccurrenceViewSet)
 
 urlpatterns = patterns('',
+    url(r'', include('broker.urls', namespace='broker')),
     url(r'^api/', include(router.urls)),
     url(r'^admin/', include(admin.site.urls)),
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),

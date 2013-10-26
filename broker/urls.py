@@ -25,17 +25,9 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-from broker.models import Region
-from django.http.response import HttpResponse
-import json
+from broker.views import report_total_per_region
+from django.conf.urls import patterns, url
 
-
-def report_total_per_region(request):
-    result = Region.objects.total_occurrences()
-    return HttpResponse(json.dumps(result))
-
-'''
-/regions/total_occurrences
-/region/1/total_occurrence
-/region/1/total
-'''
+urlpatterns = patterns('',
+    url(r'report/total-occurrences-per-region/$', report_total_per_region, name='report_total_per_region')
+)
