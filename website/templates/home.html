@@ -52,19 +52,6 @@ var geoJsonUrl = "{% static 'website/sptrans-areas.geojson' %}",
         "9": 1100,
     };
 
-/*
-function getColor(d) {
-    return d > 1400 ? '#800026' :
-           d > 1200  ? '#BD0026' :
-           d > 1000  ? '#E31A1C' :
-           d > 800  ? '#FC4E2A' :
-           d > 600   ? '#FD8D3C' :
-           d > 400   ? '#FEB24C' :
-           d > 200   ? '#FED976' :
-                      '#FFEDA0';
-}
-*/
-
 function getColor(d) {
     return d > 1400 ? '#FF0000' :
            d > 1200  ? '#FF2222' :
@@ -85,24 +72,87 @@ $(document).ready(function(){
         tileConfigs = {
             maxZoom: 18,
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
-        };
+        },
+        info = L.control(),
+        geojson;
 
     L.tileLayer(tileUrl, tileConfigs).addTo(regionMap);
     L.tileLayer(tileUrl, tileConfigs).addTo(heatMap);
 
+    info.onAdd = function(map) {
+        this._div = L.DomUtil.create('div', 'info');
+        this.update();
+        return this._div;
+    };
+    info.update = function(properties) {
+        this._div.innerHTML = '<h4>Reclamações<br />por área de transporte</h4>' + (properties ?
+            '<strong>Área ' + properties.area + ' ' + properties.nome + ':</strong> '
+                + regionData[properties.area] + ' reclamações'
+                : 'Passe o mouse nas áreas'
+        );
+    }
+
+
+    function style(feature) {
+        return {
+            weight: 2,
+            opacity: 1,
+            color: 'white',
+            dashArray: '3',
+            fillOpacity: 0.7,
+            fillColor: getColor(feature.properties.density)
+        };
+    }
+
+    function highlightFeature(e) {
+        var layer = e.target;
+
+        layer.setStyle({
+            weight: 5,
+            color: '#666',
+            dashArray: '',
+            fillOpacity: 0.7
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera) {
+            layer.bringToFront();
+        }
+
+        info.update(layer.feature.properties);
+    }
+
+    function resetHighlight(e) {
+        geojson.resetStyle(e.target);
+        info.update();
+    }
+
+    function zoomToFeature(e) {
+        regionMap.fitBounds(e.target.getBounds());
+    }
+
+    function onEachFeature(feature, layer) {
+        layer.on({
+            mouseover: highlightFeature,
+            mouseout: resetHighlight,
+            click: zoomToFeature
+        });
+    }
+
+
     $.getJSON(geoJsonUrl, function(data){
-        L.geoJson(data, {
+        geojson = L.geoJson(data, {
             'style': function(feature){
-                var regionId = feature.properties.area,
-                    regionDensity = regionData[regionId];
-                console.log(feature);
+                var regionDensity = regionData[feature.properties.area];
+
                 return {
                     'fillColor': getColor(regionDensity),
                     'fillOpacity': 0.8,
                     'stroke': false
                 }
-            }
+            },
+            'onEachFeature': onEachFeature
         }).addTo(regionMap);
+        info.addTo(regionMap);
     });
 });
 </script>
