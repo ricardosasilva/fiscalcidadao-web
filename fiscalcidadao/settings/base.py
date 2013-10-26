@@ -108,6 +108,8 @@ INSTALLED_APPS = (
     'rest_framework',
     'broker',
     'mockups',
+    'bootstrap3',
+    'website',
 )
 
 SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'

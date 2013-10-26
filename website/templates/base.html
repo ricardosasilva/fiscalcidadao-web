@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+{% load bootstrap3 %}
+  <head>
+    <title>Fiscal Cidadão</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    {% bootstrap_css %}
+  </head>
+  <body>
+
+
+    {% bootstrap_javascript %}
+
+    <div class="container">
+
+      <!-- Static navbar -->
+      <div class="navbar navbar-default">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">Fiscal Cidadão</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Link</a></li>
+            <li><a href="#">Link</a></li>
+            <li><a href="#">Link</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+
+      {% block content %}{% endblock %}
+
+    </div> <!-- /container -->
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="//code.jquery.com/jquery.js"></script>
+    {% bootstrap_javascript %}
+  </body>
+</html>
