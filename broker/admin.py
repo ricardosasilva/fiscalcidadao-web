@@ -40,6 +40,7 @@ class FactAdmin(admin.ModelAdmin):
 class OccurrenceAdmin(admin.OSMGeoAdmin):
     list_fields = ('description', 'fact_type')
     list_filter = ('date_time',)
+    raw_id_fields = ('route',)
 
 
 admin.site.register(Fact, FactAdmin)
