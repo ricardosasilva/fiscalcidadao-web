@@ -35,7 +35,7 @@ import uuid
 
 FACT_TYPES = (
     (0, _(u'Suggestion')),
-    (1, _(u'Complain'))
+    (1, _(u'Complaint'))
 )
 
 OCCURRENCE_STATUS_NEW = 0

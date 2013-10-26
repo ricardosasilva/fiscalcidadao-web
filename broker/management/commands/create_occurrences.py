@@ -1,8 +1,10 @@
+import random
 from optparse import make_option
 
-from django.contrib.auth.models import User
+from django.contrib.gis.geos import GEOSGeometry, Point
 from django.core.management.base import BaseCommand
 from model_mommy import mommy
+from multigtfs.models import Stop
 
 from broker.models import Occurrence
 
@@ -10,19 +12,23 @@ from broker.models import Occurrence
 class Command(BaseCommand):
     help = 'Creates a series of occurrences.'
     option_list = BaseCommand.option_list + (
-        make_option('-q', '--quantity',
-            dest='quantity',
-            default=10,
-            help='Quantity of items to generate.'),
-        make_option('-f', '--file',
-            dest='file',
-            help='File to read the data from.'),
+        make_option('--min',
+            dest='min',
+            default=0,
+            help='Minimum occurrences per stop.'),
+        make_option('--max',
+            default=20,
+            help='Maximum occurrences per stop.'),
         )
 
     def handle(self, *args, **options):
-        quantity = int(options['quantity'])
-        with open(options['file']) as f:
-            for point in points:
-                latitude = point[3]
-                longitude = point[4]
-                users = mommy.make(Occurrence, quantity, latitude=latitude, longitude=longitude)
+        stops = Stop.objects.all().values('lat', 'lon')
+        minimum = options['min']
+        maximum = options['max']
+        for stop in stops:
+            latitude = stop['lat']
+            longitude = stop['lon']
+            #location = Point(longitude, latitude)
+            location = GEOSGeometry('POINT({} {})'.format(longitude, latitude))
+            quantity = random.randint(minimum, maximum)
+            users = mommy.make(Occurrence, quantity, location=location)
