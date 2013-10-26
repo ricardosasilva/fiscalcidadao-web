@@ -28,6 +28,9 @@
 
 from broker.models import Fact, Occurrence, Region
 from django.contrib.gis import admin
+from multigtfs.models.route import Route
+from multigtfs.models.stop import Stop
+from multigtfs.models.trip import Trip
 
 
 class FactAdmin(admin.ModelAdmin):
@@ -36,9 +39,27 @@ class FactAdmin(admin.ModelAdmin):
 
 class OccurrenceAdmin(admin.OSMGeoAdmin):
     list_fields = ('description', 'fact_type')
-    list_filter = ('status', 'date_time')
+    list_filter = ('date_time',)
 
 
 admin.site.register(Fact, FactAdmin)
 admin.site.register(Occurrence, OccurrenceAdmin)
 admin.site.register(Region, admin.OSMGeoAdmin)
+
+
+class StopAdmin(admin.ModelAdmin):
+    raw_id_fields = ('parent_station',)
+
+class RouteAdmin(admin.ModelAdmin):
+    list_filter = ('rtype',)
+
+class TripAdmin(admin.ModelAdmin):
+    raw_id_fields = ('route', 'services', 'shape')
+
+admin.site.unregister(Stop)
+admin.site.unregister(Route)
+admin.site.unregister(Trip)
+
+admin.site.register(Stop, StopAdmin)
+admin.site.register(Route, RouteAdmin)
+admin.site.register(Trip, TripAdmin)
