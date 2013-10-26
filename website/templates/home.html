@@ -1,5 +1,109 @@
 {% extends 'base.html' %}
+{% load staticfiles %}
 
 {% block content %}
-<div id="map"></div>
+<h2>Últimas ocorrências</h2>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fato</th>
+            <th>Data e hora</th>
+            <th>Linha</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for occurrence in occurrences %}
+        <tr>
+            <td>{{ occurrence.fact }}</td>
+            <td>{{ occurrence.date_time }}</td>
+            <td>{{ occurrence.route }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<h2 class="clearfix">Gráficos</h2>
+<div class="col-md-4">
+    <h3>Regiões - densidade</h3>
+    <div class="map" id="region-map"></div>
+</div>
+<div class="col-md-4">
+    <h3>Mapa de calor</h3>
+    <div class="map" id="heat-map"></div>
+</div>
+<div class="col-md-4">
+    <h3>Porcentagens por categoria</h3>
+    <div class="map" id="fact-chart"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+var geoJsonUrl = "{% static 'website/sptrans-areas.geojson' %}",
+    regionData = {
+        "1": 1000,
+        "2": 2000,
+        "3": 500,
+        "4": 800,
+        "5": 700,
+        "6": 1500,
+        "7": 300,
+        "8": 650,
+        "9": 1100,
+    };
+
+/*
+function getColor(d) {
+    return d > 1400 ? '#800026' :
+           d > 1200  ? '#BD0026' :
+           d > 1000  ? '#E31A1C' :
+           d > 800  ? '#FC4E2A' :
+           d > 600   ? '#FD8D3C' :
+           d > 400   ? '#FEB24C' :
+           d > 200   ? '#FED976' :
+                      '#FFEDA0';
+}
+*/
+
+function getColor(d) {
+    return d > 1400 ? '#FF0000' :
+           d > 1200  ? '#FF2222' :
+           d > 1000  ? '#FF4444' :
+           d > 800  ? '#FF6666' :
+           d > 600   ? '#FF8888' :
+           d > 400   ? '#FFAAAA' :
+           d > 200   ? '#FFCCCC' :
+                      '#FFFFFF';
+}
+
+$(document).ready(function(){
+    var initialCoordinates = [-23.6725, -46.5995],
+        initialZoom = 9,
+        regionMap = L.map('region-map').setView(initialCoordinates, initialZoom),
+        heatMap = L.map('heat-map').setView(initialCoordinates, initialZoom),
+        tileUrl = 'http://{s}.tiles.mapbox.com/v3/examples.map-vyofok3q/{z}/{x}/{y}.png',
+        tileConfigs = {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+        };
+
+    L.tileLayer(tileUrl, tileConfigs).addTo(regionMap);
+    L.tileLayer(tileUrl, tileConfigs).addTo(heatMap);
+
+    $.getJSON(geoJsonUrl, function(data){
+        L.geoJson(data, {
+            'style': function(feature){
+                var regionId = feature.properties.area,
+                    regionDensity = regionData[regionId];
+                console.log(feature);
+                return {
+                    'fillColor': getColor(regionDensity),
+                    'fillOpacity': 0.8,
+                    'stroke': false
+                }
+            }
+        }).addTo(regionMap);
+    });
+});
+</script>
 {% endblock %}
