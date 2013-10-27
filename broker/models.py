@@ -108,6 +108,7 @@ def occurrence_photo_upload_to(instance, filename):
 
 
 class OccurrenceManager(models.GeoManager):
+
     def points(self):
         past = datetime.now() - timedelta(days=30)
         occurrences = self.filter(date_time__gte=past)
@@ -138,9 +139,7 @@ class RegionManager(models.GeoManager):
         for region in Region.objects.all():
             past = datetime.now() - timedelta(days=30)
             total_occurrences = Occurrence.objects.filter(location__within=region.area, date_time__gte=past).count()
-#            occurrences = Occurrence.objects.filter(location__within=region.area).order_by('fact').annotate(Count('fact'))
-#            facts = Fact.objects.filter(occurrence__in=occurrences).annotate(total_occurrences=Count('occurrence')).values('id', 'total_occurrences')
-            result[region.id] = total_occurrences
+            result[region.code] = total_occurrences
         return result
 
 
