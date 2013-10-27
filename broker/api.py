@@ -26,12 +26,17 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 from broker.models import Fact, Occurrence
-from rest_framework import viewsets
+from rest_framework import viewsets, mixins
+from rest_framework.viewsets import GenericViewSet
 
 
 class FactViewSet(viewsets.ReadOnlyModelViewSet):
     model = Fact
 
 
-class OccurrenceViewSet(viewsets.ModelViewSet):
+class OccurrenceViewSet(mixins.CreateModelMixin,
+                    mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
+                    mixins.DestroyModelMixin,
+                    GenericViewSet):
     model = Occurrence
