@@ -26,21 +26,36 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
-from django.contrib.gis.db import models
-from django.utils.translation import ugettext as _
-from multigtfs.models.route import Route
-from sorl.thumbnail import ImageField
 import os
 import uuid
 
+from django.contrib.gis.db import models
+from django.db.models import Count
+from django.utils.translation import ugettext as _
+from multigtfs.models.route import Route
+from sorl.thumbnail import ImageField
+
+
+SUGGESTION_FACT = 0
+COMPLAINT_FACT = 1
+
+
 FACT_TYPES = (
-    (0, _(u'Suggestion')),
-    (1, _(u'Complaint'))
+    (SUGGESTION_FACT, _(u'Suggestion')),
+    (COMPLAINT_FACT, _(u'Complaint'))
 )
+
+
+class FactManager(models.Manager):
+    def complaints(self):
+        return self.filter(fact_type=COMPLAINT_FACT).annotate(num_occurrencies=Count('occurrence')).values('description', 'num_occurrencies')
+
 
 class Fact(models.Model):
     description = models.CharField(max_length=30)
     fact_type = models.SmallIntegerField(choices=FACT_TYPES)
+
+    objects = FactManager()
 
     def __unicode__(self):
         return u'%s' % self.description
@@ -66,6 +81,7 @@ class Occurrence(models.Model):
     photo = ImageField(blank=True, upload_to=occurrence_photo_upload_to)
     ip_address = models.CharField(max_length=15, blank=True)
     phone = models.CharField(max_length=20, blank=True, db_index=True)
+
     objects = OccurrenceManager()
 
     def __unicode__(self):
@@ -88,6 +104,7 @@ class Region(models.Model):
     name = models.CharField(max_length=50)
     code = models.CharField(max_length=10, blank=True)
     area = models.PolygonField()
+
     objects = RegionManager()
 
     def __unicode__(self):

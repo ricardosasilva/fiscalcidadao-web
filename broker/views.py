@@ -29,7 +29,7 @@ import json
 
 from django.http.response import HttpResponse
 
-from broker.models import Occurrence, Region
+from broker.models import Fact, Occurrence, Region
 
 
 def report_total_per_region(request):
@@ -44,6 +44,13 @@ def report_occurrences_points(request):
         'value': 0.1,
     } for point in Occurrence.objects.points()]
     return HttpResponse(json.dumps(result))
+
+
+def report_facts_complaints(request):
+    result = [[complaint['description'], complaint['num_occurrencies']]
+              for complaint in Fact.objects.complaints()]
+    return HttpResponse(json.dumps(result))
+
 
 '''
 /regions/total_occurrences

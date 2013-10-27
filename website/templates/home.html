@@ -32,7 +32,7 @@
     <div class="map" id="heat-map"></div>
 </div>
 <div class="col-md-4">
-    <h3>Porcentagens por categoria</h3>
+    <h3>Reclamações por categoria</h3>
     <div class="map" id="fact-chart"></div>
 </div>
 {% endblock %}
@@ -40,10 +40,12 @@
 {% block scripts %}
 <script src="{% static 'website/heatmap.js' %}"></script>
 <script src="{% static 'website/heatmap-leaflet.js' %}"></script>
+<script src="//code.highcharts.com/highcharts.js"></script>
 <script>
 var geoJsonUrl = "{% static 'website/sptrans-areas.geojson' %}",
     occurrenciesPointsUrl = "{% url 'broker:report_occurrences_points' %}",
-    totalPerRegionUrl = "{% url 'broker:report_total_per_region' %}";
+    totalPerRegionUrl = "{% url 'broker:report_total_per_region' %}",
+    factsComplaintsUrl = "{% url 'broker:report_facts_complaints' %}";
 
 function getColor(d) {
     return d > 1400 ? '#FF0000' :
@@ -166,6 +168,45 @@ $(document).ready(function(){
     $.getJSON(occurrenciesPointsUrl, function(data){
         heatmapLayer.addData(data);
         heatmapLayer.addTo(heatMap);
+    });
+
+    $.getJSON(factsComplaintsUrl, function(data){
+        Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+            return {
+                radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+                stops: [
+                    [0, color],
+                    [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+                ]
+            };
+        });
+        $('#fact-chart').highcharts({
+            chart: {
+                plotBackgroundColor: null,
+                plotBorderWidth: null,
+                plotShadow: false
+            },
+            title: {
+                text: 'Reclamações por categoria'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: false,
+                    }
+                }
+            },
+            series: [{
+                type: 'pie',
+                name: 'Reclamações',
+                data: data
+            }]
+        });
     });
 });
 </script>
