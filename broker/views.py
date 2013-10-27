@@ -55,11 +55,9 @@ def report_facts_complaints(request):
 @require_POST
 @csrf_exempt
 def post_ocurrence(request):
-    print request.POST
     form = OccurrenceForm(request.POST, request.FILES)
     if form.is_valid():
         occurrence = form.save(ip_address=request.META['REMOTE_ADDR'])
         return HttpResponse('ok')
     else:
-        print form.errors
         return HttpResponseBadRequest('Bad request: please check your data')
