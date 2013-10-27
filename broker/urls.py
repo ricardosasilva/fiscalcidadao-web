@@ -25,12 +25,14 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
+from broker.views import report_facts_complaints, report_total_per_region, \
+    report_occurrences_points, report_facts_evolution
 from django.conf.urls import patterns, url
 
-from broker.views import report_facts_complaints, report_total_per_region, report_occurrences_points
 
 urlpatterns = patterns('',
     url(r'report/total-occurrences-per-region/$', report_total_per_region, name='report_total_per_region'),
     url(r'report/occurrences-points/$', report_occurrences_points, name='report_occurrences_points'),
     url(r'report/complaints/$', report_facts_complaints, name='report_facts_complaints'),
+    url(r'report/evolution/$', report_facts_evolution, name='report_evolution'),
 )

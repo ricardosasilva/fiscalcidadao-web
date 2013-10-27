@@ -27,14 +27,14 @@
 #
 
 from datetime import datetime, timedelta
-import os
-import uuid
-
 from django.contrib.gis.db import models
 from django.db.models import Count
 from django.utils.translation import ugettext as _
 from multigtfs.models.route import Route
 from sorl.thumbnail import ImageField
+import os
+import uuid
+
 
 
 SUGGESTION_FACT = 0
@@ -48,11 +48,49 @@ FACT_TYPES = (
 
 
 class FactManager(models.Manager):
+
     def complaints(self):
         past = datetime.now() - timedelta(days=30)
         facts = self.filter(fact_type=COMPLAINT_FACT, occurrence__date_time__gte=past)
         return facts.annotate(num_occurrencies=Count('occurrence')).values('description', 'num_occurrencies')
 
+    def complaints_over_time(self):
+        result = {}
+        minus_1 = datetime.now() - timedelta(days=30)
+        minus_2 = datetime.now() - timedelta(days=60)
+        minus_3 = datetime.now() - timedelta(days=90)
+        minus_4 = datetime.now() - timedelta(days=120)
+
+        result[30] = Fact.objects.filter(occurrence__date_time__gt=minus_1).annotate(total_occurrences=Count('occurrence')).values('id', 'description', 'total_occurrences')
+        result[60] = Fact.objects.filter(occurrence__date_time__gt=minus_2, occurrence__date_time__lt=minus_1).annotate(total_occurrences=Count('occurrence')).values('id', 'description', 'total_occurrences')
+        result[90] = Fact.objects.filter(occurrence__date_time__gt=minus_3, occurrence__date_time__lt=minus_2).annotate(total_occurrences=Count('occurrence')).values('id', 'description', 'total_occurrences')
+        result[120] = Fact.objects.filter(occurrence__date_time__gt=minus_4, occurrence__date_time__lt=minus_3).annotate(total_occurrences=Count('occurrence')).values('id', 'description', 'total_occurrences')
+        
+        series = []
+        for fact in super(FactManager, self).filter(pk__lte=8):
+            serie = {}
+            serie['name'] = fact.description
+            serie['data'] = []
+            try:
+                serie['data'].append(result[30].get(id=fact.id)['total_occurrences'])
+            except:
+                serie['data'].append(0)
+
+            try:
+                serie['data'].append(result[60].get(id=fact.id)['total_occurrences'])
+            except:
+                serie['data'].append(0)
+            try:
+                serie['data'].append(result[90].get(id=fact.id)['total_occurrences'])
+            except:
+                serie['data'].append(0)
+            try:
+                serie['data'].append(result[120].get(id=fact.id)['total_occurrences'])
+            except:
+                serie['data'].append(0)
+
+            series.append(serie)
+        return series
 
 class Fact(models.Model):
     description = models.CharField(max_length=30)
@@ -98,7 +136,8 @@ class RegionManager(models.GeoManager):
     def total_occurrences(self):
         result = {}
         for region in Region.objects.all():
-            total_occurrences = Occurrence.objects.filter(location__within=region.area).count()
+            past = datetime.now() - timedelta(days=30)
+            total_occurrences = Occurrence.objects.filter(location__within=region.area, date_time__gte=past).count()
 #            occurrences = Occurrence.objects.filter(location__within=region.area).order_by('fact').annotate(Count('fact'))
 #            facts = Fact.objects.filter(occurrence__in=occurrences).annotate(total_occurrences=Count('occurrence')).values('id', 'total_occurrences')
             result[region.id] = total_occurrences
@@ -108,7 +147,7 @@ class RegionManager(models.GeoManager):
 class Region(models.Model):
     name = models.CharField(max_length=50)
     code = models.CharField(max_length=10, blank=True)
-    area = models.PolygonField()
+    area = models.MultiPolygonField()
 
     objects = RegionManager()
 

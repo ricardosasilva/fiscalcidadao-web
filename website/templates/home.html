@@ -2,19 +2,25 @@
 {% load staticfiles %}
 
 {% block content %}
-<h1>Gráficos</h1>
+<div class="row">
+	<div class="col-md-6">
+	    <h3>Comparação entre áreas da cidade</h3>
+	    <div class="map" id="region-map"></div>
+	</div>
+	<div class="col-md-6">
+	    <h3>Localização dos problemas</h3>
+	    <div class="map" id="heat-map"></div>
+	</div>
+</div>
 
-<div class="col-md-4">
-    <h3>Regiões - densidade</h3>
-    <div class="map" id="region-map"></div>
-</div>
-<div class="col-md-4">
-    <h3>Mapa de calor</h3>
-    <div class="map" id="heat-map"></div>
-</div>
-<div class="col-md-4">
-    <h3>Reclamações por categoria</h3>
-    <div class="map" id="fact-chart"></div>
+<br/><br/>
+<div class=row>
+	<div class="col-md-6">
+	    <div class="" id="fact-chart"></div>
+	</div>	
+	<div class="col-md-6">
+	    <div id="evolution-chart"></div>
+	</div>
 </div>
 {% endblock %}
 
@@ -26,22 +32,23 @@
 var geoJsonUrl = "{% static 'website/sptrans-areas.geojson' %}",
     occurrenciesPointsUrl = "{% url 'broker:report_occurrences_points' %}",
     totalPerRegionUrl = "{% url 'broker:report_total_per_region' %}",
-    factsComplaintsUrl = "{% url 'broker:report_facts_complaints' %}";
+    factsComplaintsUrl = "{% url 'broker:report_facts_complaints' %}",
+    evolutionUrl = "{% url 'broker:report_evolution' %}";
 
 function getColor(d) {
-    return d > 1400 ? '#FF0000' :
-           d > 1200  ? '#FF2222' :
-           d > 1000  ? '#FF4444' :
-           d > 800  ? '#FF6666' :
-           d > 600   ? '#FF8888' :
-           d > 400   ? '#FFAAAA' :
-           d > 200   ? '#FFCCCC' :
+    return d > 80 ? '#FF0000' :
+           d > 70  ? '#FF2222' :
+           d > 60  ? '#FF4444' :
+           d > 50  ? '#FF6666' :
+           d > 40   ? '#FF8888' :
+           d > 30   ? '#FFAAAA' :
+           d > 10   ? '#FFCCCC' :
                       '#FFFFFF';
 }
 
 $(document).ready(function(){
     var initialCoordinates = [-23.6725, -46.5995],
-        initialZoom = 9,
+        initialZoom = 10,
         regionMap = L.map('region-map').setView(initialCoordinates, initialZoom),
         heatMap = L.map('heat-map').setView(initialCoordinates, initialZoom),
         tileUrl = 'http://{s}.tiles.mapbox.com/v3/examples.map-vyofok3q/{z}/{x}/{y}.png',
@@ -151,6 +158,47 @@ $(document).ready(function(){
         heatmapLayer.addTo(heatMap);
     });
 
+	$.getJSON(evolutionUrl, function(data){
+		$('#evolution-chart').highcharts({
+            chart: {
+                type: 'area'
+            },
+            title: {
+                text: 'Evolução dos problemas'
+            },
+            xAxis: {
+                categories: ['4 meses', '3 meses', '2 meses', '1 mês'],
+                tickmarkPlacement: 'on',
+                title: {
+                    enabled: false
+                }
+            },
+            yAxis: {
+                title: {
+                    text: 'Porcentagem'
+                }
+            },
+            tooltip: {
+                pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.percentage:.1f}%</b> ({point.y:,.0f} millions)<br/>',
+                shared: true
+            },
+            plotOptions: {
+                area: {
+                    stacking: 'normal',
+                    lineColor: '#ffffff',
+                    lineWidth: 1,
+                    marker: {
+                        lineWidth: 1,
+                        lineColor: '#ffffff'
+                    }
+                }
+            },
+            series: data
+        });
+
+	});
+
+
     $.getJSON(factsComplaintsUrl, function(data){
         Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
             return {
@@ -168,7 +216,10 @@ $(document).ready(function(){
                 plotShadow: false
             },
             title: {
-                text: ''
+                text: 'Distribuição dos problemas'
+            },
+            subtitle: {
+            	text: "Últimos 30 dias"
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -179,7 +230,8 @@ $(document).ready(function(){
                     cursor: 'pointer',
                     dataLabels: {
                         enabled: false,
-                    }
+                    },
+                    showInLegend: true
                 }
             },
             series: [{

@@ -28,9 +28,9 @@
 from broker.forms import OccurrenceForm
 from broker.models import Fact, Occurrence, Region
 from django.http.response import HttpResponse, HttpResponseBadRequest
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
-from django.views.decorators.csrf import csrf_exempt
 
 
 def report_total_per_region(request):
@@ -51,6 +51,11 @@ def report_facts_complaints(request):
     result = [[complaint['description'], complaint['num_occurrencies']]
               for complaint in Fact.objects.complaints()]
     return HttpResponse(json.dumps(result))
+
+def report_facts_evolution(request):
+    result = Fact.objects.complaints_over_time()
+    return HttpResponse(json.dumps(result))
+
 
 @require_POST
 @csrf_exempt
