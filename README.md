@@ -60,6 +60,17 @@ $ python manage.py syncdb
 $ python manage.py migrate
 ```
 
+## Running the project
+
+- To run the development server:
+
+```
+$ python manage.py runserver
+```
+
+Now you can access the site at [http://localhost:8000/](http://localhost:8000/)
+
+
 ## Importing GTFS data
 
 ```
