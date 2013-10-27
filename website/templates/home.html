@@ -3,24 +3,24 @@
 
 {% block content %}
 <div class="row">
-	<div class="col-md-6">
-	    <h3>Comparação entre áreas da cidade</h3>
-	    <div class="map" id="region-map"></div>
-	</div>
-	<div class="col-md-6">
-	    <h3>Localização dos problemas</h3>
-	    <div class="map" id="heat-map"></div>
-	</div>
+    <div class="col-md-6">
+        <h3>Comparação entre áreas da cidade</h3>
+        <div class="map" id="region-map"></div>
+    </div>
+    <div class="col-md-6">
+        <h3>Localização dos problemas</h3>
+        <div class="map" id="heat-map"></div>
+    </div>
 </div>
 
 <br/><br/>
 <div class=row>
-	<div class="col-md-6">
-	    <div class="" id="fact-chart"></div>
-	</div>	
-	<div class="col-md-6">
-	    <div id="evolution-chart"></div>
-	</div>
+    <div class="col-md-6">
+        <div class="" id="fact-chart"></div>
+    </div>
+    <div class="col-md-6">
+        <div id="evolution-chart"></div>
+    </div>
 </div>
 {% endblock %}
 
@@ -58,7 +58,9 @@ $(document).ready(function(){
         },
         info = L.control(),
         geojson,
-        heatmapLayer;
+        heatmapLayer,
+        generalRegionData,
+        legend = L.control({position: 'bottomright'});
 
     L.tileLayer(tileUrl, tileConfigs).addTo(regionMap);
     L.tileLayer(tileUrl, tileConfigs).addTo(heatMap);
@@ -69,9 +71,9 @@ $(document).ready(function(){
         return this._div;
     };
     info.update = function(properties) {
-        this._div.innerHTML = '<h4>Reclamações<br />por área de transporte</h4>' + (properties ?
+        this._div.innerHTML = '<h4>Reclamações<br />nos últimos 30 dias</h4>' + (properties ?
             '<strong>Área ' + properties.area + ' ' + properties.nome + ':</strong> '
-                + regionData[properties.area] + ' reclamações'
+                + generalRegionData[properties.area] + ' reclamações'
                 : 'Passe o mouse nas áreas'
         );
     }
@@ -134,9 +136,29 @@ $(document).ready(function(){
         }
     });
 
+    legend.onAdd = function (map) {
+
+        var div = L.DomUtil.create('div', 'info legend'),
+            grades = [0, 10, 30, 40, 50, 60, 70, 80],
+            labels = [],
+            from, to;
+
+        for (var i = 0; i < grades.length; i++) {
+            from = grades[i];
+            to = grades[i + 1];
+
+            labels.push(
+                '<i style="background:' + getColor(from + 1) + '"></i> ' +
+                from + (to ? '&ndash;' + to : '+'));
+        }
+
+        div.innerHTML = labels.join('<br>');
+        return div;
+    };
 
     $.getJSON(geoJsonUrl, function(geoJsonData){
         $.getJSON(totalPerRegionUrl, function(regionData){
+            generalRegionData = regionData;
             geojson = L.geoJson(geoJsonData, {
                 'style': function(feature){
                     var regionDensity = regionData[feature.properties.area];
@@ -150,6 +172,7 @@ $(document).ready(function(){
                 'onEachFeature': onEachFeature
             }).addTo(regionMap);
             info.addTo(regionMap);
+            legend.addTo(regionMap);
         });
     });
 
@@ -158,8 +181,8 @@ $(document).ready(function(){
         heatmapLayer.addTo(heatMap);
     });
 
-	$.getJSON(evolutionUrl, function(data){
-		$('#evolution-chart').highcharts({
+    $.getJSON(evolutionUrl, function(data){
+        $('#evolution-chart').highcharts({
             chart: {
                 type: 'area'
             },
@@ -196,7 +219,7 @@ $(document).ready(function(){
             series: data
         });
 
-	});
+    });
 
 
     $.getJSON(factsComplaintsUrl, function(data){
@@ -219,7 +242,7 @@ $(document).ready(function(){
                 text: 'Distribuição dos problemas'
             },
             subtitle: {
-            	text: "Últimos 30 dias"
+                text: "Últimos 30 dias"
             },
             tooltip: {
                 pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
