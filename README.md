@@ -60,6 +60,14 @@ $ python manage.py syncdb
 $ python manage.py migrate
 ```
 
+## Running project
+
+- To run the development server:
+
+```
+$ python manage.py runserver
+```
+
 ## Importing GTFS data
 
 ```
