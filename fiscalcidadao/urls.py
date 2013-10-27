@@ -40,6 +40,7 @@ router.register(r'facts', FactViewSet)
 router.register(r'occurrences', OccurrenceViewSet)
 
 urlpatterns = patterns('',
+    url(r'^occurrence/$', 'broker.views.post_ocurrence'),
     url(r'', include('broker.urls', namespace='broker')),
     url(r'^api/', include(router.urls)),
     url(r'^admin/', include(admin.site.urls)),
@@ -47,4 +48,5 @@ urlpatterns = patterns('',
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
     url(r'^$', 'website.views.home'),
+    url(r'^select/$', 'website.views.select'),
 )

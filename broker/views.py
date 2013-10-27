@@ -25,11 +25,12 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-import json
-
-from django.http.response import HttpResponse
-
+from broker.forms import OccurrenceForm
 from broker.models import Fact, Occurrence, Region
+from django.http.response import HttpResponse, HttpResponseBadRequest
+from django.views.decorators.http import require_POST
+import json
+from django.views.decorators.csrf import csrf_exempt
 
 
 def report_total_per_region(request):
@@ -51,9 +52,14 @@ def report_facts_complaints(request):
               for complaint in Fact.objects.complaints()]
     return HttpResponse(json.dumps(result))
 
-
-'''
-/regions/total_occurrences
-/region/1/total_occurrence
-/region/1/total
-'''
+@require_POST
+@csrf_exempt
+def post_ocurrence(request):
+    print request.POST
+    form = OccurrenceForm(request.POST, request.FILES)
+    if form.is_valid():
+        occurrence = form.save(ip_address=request.META['REMOTE_ADDR'])
+        return HttpResponse('ok')
+    else:
+        print form.errors
+        return HttpResponseBadRequest('Bad request: please check your data')

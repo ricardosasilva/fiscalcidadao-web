@@ -26,7 +26,12 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+from broker.models import Occurrence
 from django.shortcuts import render
+from rest_framework import serializers
 
 def home(request):
     return render(request, 'home.html')
+
+def select(request):
+    return render(request, 'select-maps.html')

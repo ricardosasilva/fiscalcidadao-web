@@ -29,7 +29,6 @@ from broker.models import Fact, Occurrence
 from rest_framework import viewsets, mixins
 from rest_framework.viewsets import GenericViewSet
 
-
 class FactViewSet(viewsets.ReadOnlyModelViewSet):
     model = Fact
 
