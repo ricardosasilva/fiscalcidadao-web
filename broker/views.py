@@ -25,13 +25,24 @@
 # ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
 #
-from broker.models import Region
-from django.http.response import HttpResponse
 import json
+
+from django.http.response import HttpResponse
+
+from broker.models import Occurrence, Region
 
 
 def report_total_per_region(request):
     result = Region.objects.total_occurrences()
+    return HttpResponse(json.dumps(result))
+
+
+def report_occurrences_points(request):
+    result = [{
+        'lat': point['location'].y,
+        'lon': point['location'].x,
+        'value': 0.1,
+    } for point in Occurrence.objects.points()]
     return HttpResponse(json.dumps(result))
 
 '''

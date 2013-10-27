@@ -38,19 +38,12 @@
 {% endblock %}
 
 {% block scripts %}
+<script src="{% static 'website/heatmap.js' %}"></script>
+<script src="{% static 'website/heatmap-leaflet.js' %}"></script>
 <script>
 var geoJsonUrl = "{% static 'website/sptrans-areas.geojson' %}",
-    regionData = {
-        "1": 1000,
-        "2": 2000,
-        "3": 500,
-        "4": 800,
-        "5": 700,
-        "6": 1500,
-        "7": 300,
-        "8": 650,
-        "9": 1100,
-    };
+    occurrenciesPointsUrl = "{% url 'broker:report_occurrences_points' %}",
+    totalPerRegionUrl = "{% url 'broker:report_total_per_region' %}";
 
 function getColor(d) {
     return d > 1400 ? '#FF0000' :
@@ -74,7 +67,8 @@ $(document).ready(function(){
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>'
         },
         info = L.control(),
-        geojson;
+        geojson,
+        heatmapLayer;
 
     L.tileLayer(tileUrl, tileConfigs).addTo(regionMap);
     L.tileLayer(tileUrl, tileConfigs).addTo(heatMap);
@@ -138,21 +132,40 @@ $(document).ready(function(){
         });
     }
 
+    heatmapLayer = L.TileLayer.heatMap({
+        radius: 5,
+        opacity: 0.8,
+        gradient: {
+            0.45: "rgb(0,0,255)",
+            0.55: "rgb(0,255,255)",
+            0.65: "rgb(0,255,0)",
+            0.95: "yellow",
+            1.0: "rgb(255,0,0)"
+        }
+    });
 
-    $.getJSON(geoJsonUrl, function(data){
-        geojson = L.geoJson(data, {
-            'style': function(feature){
-                var regionDensity = regionData[feature.properties.area];
 
-                return {
-                    'fillColor': getColor(regionDensity),
-                    'fillOpacity': 0.8,
-                    'stroke': false
-                }
-            },
-            'onEachFeature': onEachFeature
-        }).addTo(regionMap);
-        info.addTo(regionMap);
+    $.getJSON(geoJsonUrl, function(geoJsonData){
+        $.getJSON(totalPerRegionUrl, function(regionData){
+            geojson = L.geoJson(geoJsonData, {
+                'style': function(feature){
+                    var regionDensity = regionData[feature.properties.area];
+
+                    return {
+                        'fillColor': getColor(regionDensity),
+                        'fillOpacity': 0.8,
+                        'stroke': false
+                    }
+                },
+                'onEachFeature': onEachFeature
+            }).addTo(regionMap);
+            info.addTo(regionMap);
+        });
+    });
+
+    $.getJSON(occurrenciesPointsUrl, function(data){
+        heatmapLayer.addData(data);
+        heatmapLayer.addTo(heatMap);
     });
 });
 </script>

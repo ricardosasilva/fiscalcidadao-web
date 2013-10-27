@@ -52,7 +52,10 @@ def occurrence_photo_upload_to(instance, filename):
 
 
 class OccurrenceManager(models.GeoManager):
-    pass
+    def points(self):
+        for point in self.values('location'):
+            yield point
+
 
 class Occurrence(models.Model):
     fact = models.ForeignKey(Fact)
@@ -77,7 +80,7 @@ class RegionManager(models.GeoManager):
             total_occurrences = Occurrence.objects.filter(location__within=region.area).count()
 #            occurrences = Occurrence.objects.filter(location__within=region.area).order_by('fact').annotate(Count('fact'))
 #            facts = Fact.objects.filter(occurrence__in=occurrences).annotate(total_occurrences=Count('occurrence')).values('id', 'total_occurrences')
-            result[region.id] = total_occurrences 
+            result[region.id] = total_occurrences
         return result
 
 
