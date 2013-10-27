@@ -27,8 +27,11 @@
 #
 
 from broker.api import FactViewSet, OccurrenceViewSet
+from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from rest_framework import routers
 
 admin.autodiscover()
@@ -51,3 +54,7 @@ urlpatterns = patterns('',
     url(r'^$', 'website.views.home'),
     url(r'^select/$', 'website.views.select'),
 )
+
+if settings.DEBUG:
+    urlpatterns += staticfiles_urlpatterns()
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
