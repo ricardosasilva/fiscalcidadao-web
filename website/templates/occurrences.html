@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+
+{% block content %}
+<h1>Últimas ocorrências</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fato</th>
+            <th>Data e hora</th>
+            <th>Linha</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for occurrence in latest %}
+        <tr>
+            <td>{{ occurrence.fact }}</td>
+            <td>{{ occurrence.date_time }}</td>
+            <td>{{ occurrence.route }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
