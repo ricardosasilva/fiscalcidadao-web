@@ -26,6 +26,7 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+from datetime import datetime, timedelta
 import os
 import uuid
 
@@ -48,7 +49,9 @@ FACT_TYPES = (
 
 class FactManager(models.Manager):
     def complaints(self):
-        return self.filter(fact_type=COMPLAINT_FACT).annotate(num_occurrencies=Count('occurrence')).values('description', 'num_occurrencies')
+        past = datetime.now() - timedelta(days=30)
+        facts = self.filter(fact_type=COMPLAINT_FACT, occurrence__date_time__gte=past)
+        return facts.annotate(num_occurrencies=Count('occurrence')).values('description', 'num_occurrencies')
 
 
 class Fact(models.Model):
@@ -68,7 +71,9 @@ def occurrence_photo_upload_to(instance, filename):
 
 class OccurrenceManager(models.GeoManager):
     def points(self):
-        for point in self.values('location'):
+        past = datetime.now() - timedelta(days=30)
+        occurrences = self.filter(date_time__gte=past)
+        for point in occurrences.values('location'):
             yield point
 
 
