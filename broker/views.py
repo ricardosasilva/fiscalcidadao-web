@@ -57,18 +57,11 @@ def report_facts_evolution(request):
     result = Fact.objects.complaints_over_time()
     return HttpResponse(json.dumps(result))
 
-def handle_uploaded_file(f):
-    with open(u'occurrence_photos/%s.jpg' % uuid.uuid4().hex, 'wb+') as destination:
-        for chunk in f.chunks():
-            destination.write(chunk)
-
 @require_POST
 @csrf_exempt
 def post_ocurrence(request):
-    print request
     form = OccurrenceForm(request.POST, request.FILES)
     if form.is_valid():
-        handle_uploaded_file(request.FILES['photo'])
         occurrence = form.save(ip_address=request.META['REMOTE_ADDR'])
         return HttpResponse('ok')
     else:

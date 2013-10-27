@@ -79,6 +79,4 @@ class OccurrenceForm(forms.Form):
         occurrence.location = Point(y=latitude, x=longitude, srid=4326)
         occurrence.route = self.route
         occurrence.ip_address = ip_address
-        if self.photo:
-            occurrence.photo = self.photo
         return occurrence.save()
