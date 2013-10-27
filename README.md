@@ -68,7 +68,7 @@ $ python manage.py migrate
 $ python manage.py runserver
 ```
 
-Now you can access the site at [http://localhost:8000/][http://localhost:8000/]
+Now you can access the site at [http://localhost:8000/](http://localhost:8000/)
 
 
 ## Importing GTFS data
