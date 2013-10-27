@@ -26,6 +26,11 @@
 # POSSIBILITY OF SUCH DAMAGE.
 #
 
+import sys
+from os.path import dirname
+
+sys.path.append(dirname(dirname(dirname(__file__))))
+
 from fiscalcidadao.settings.base import *
 
 DATABASES = {
