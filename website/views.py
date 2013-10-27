@@ -30,8 +30,18 @@ from broker.models import Occurrence
 from django.shortcuts import render
 from rest_framework import serializers
 
+from broker.models import Occurrence
+
 def home(request):
     return render(request, 'home.html')
 
+
 def select(request):
     return render(request, 'select-maps.html')
+
+
+def occurrences(request):
+    quantity = 20
+    latest = Occurrence.objects.order_by('-date_time')[:quantity]
+    return render(request, 'occurrences.html', {'latest': latest})
+
