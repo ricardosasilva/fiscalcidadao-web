@@ -2,27 +2,8 @@
 {% load staticfiles %}
 
 {% block content %}
-<h2>Últimas ocorrências</h2>
-<table class="table">
-    <thead>
-        <tr>
-            <th>Fato</th>
-            <th>Data e hora</th>
-            <th>Linha</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for occurrence in occurrences %}
-        <tr>
-            <td>{{ occurrence.fact }}</td>
-            <td>{{ occurrence.date_time }}</td>
-            <td>{{ occurrence.route }}</td>
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+<h1>Gráficos</h1>
 
-<h2 class="clearfix">Gráficos</h2>
 <div class="col-md-4">
     <h3>Regiões - densidade</h3>
     <div class="map" id="region-map"></div>

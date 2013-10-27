@@ -46,5 +46,6 @@ urlpatterns = patterns('',
     url(r'^admin/doc/', include('django.contrib.admindocs.urls')),
     url(r'^api-auth/', include('rest_framework.urls',
                                namespace='rest_framework')),
+    url(r'^occurrences/$', 'website.views.occurrences', name='occurrences'),
     url(r'^$', 'website.views.home'),
 )
